@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Clear loading message
       activitiesList.innerHTML = "";
 
+
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
         const activityCard = document.createElement("div");
@@ -45,15 +46,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="participants-container">
             ${participantsHTML}
           </div>
+          <button class="register-btn" data-activity="${name}">Register Student</button>
         `;
 
         activitiesList.appendChild(activityCard);
+      });
 
-        // Add option to select dropdown
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        activitySelect.appendChild(option);
+      // Add event listeners to register buttons
+      document.querySelectorAll(".register-btn").forEach((button) => {
+        button.addEventListener("click", handleRegisterClick);
       });
 
       // Add event listeners to delete buttons
@@ -65,6 +66,16 @@ document.addEventListener("DOMContentLoaded", () => {
         "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
     }
+  }
+
+  // Handle register button click
+  function handleRegisterClick(event) {
+    const activity = event.target.getAttribute("data-activity");
+    // Show the signup form and set the selected activity
+    signupForm.classList.remove("hidden");
+    document.getElementById("activity").value = activity;
+    document.getElementById("email").value = "";
+    document.getElementById("email").focus();
   }
 
   // Handle unregister functionality
@@ -132,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
+        signupForm.classList.add("hidden");
         signupForm.reset();
 
         // Refresh activities list to show updated participants
